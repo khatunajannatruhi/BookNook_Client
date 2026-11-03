@@ -81,8 +81,11 @@ function MyBooksContent() {
             >
               <div className="relative h-52 w-full">
                 <img
-                  src={book.image || 'https://i.ibb.co/2kR5zq0/User-avatar-svg.png'}
+                  src={book.image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800'}
                   alt={book.title}
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800';
+                  }}
                   className="w-full h-full object-cover"
                 />
                 <span className="absolute top-2 right-2 bg-amber-600 text-white text-xs px-2 py-1 rounded-full">

@@ -53,8 +53,11 @@ function BookDetailsContent() {
           {/* Image */}
           <div className="relative h-80 md:h-full min-h-[400px]">
             <img
-              src={book.image || 'https://i.ibb.co/2kR5zq0/User-avatar-svg.png'}
+              src={book.image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800'}
               alt={book.title}
+              onError={(e) => {
+                e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800';
+              }}
               className="w-full h-full object-cover"
             />
           </div>

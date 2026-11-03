@@ -89,8 +89,11 @@ function MyBorrowsContent() {
                   <tr key={borrow._id} className="hover:bg-amber-50/50 dark:hover:bg-gray-700/50 transition-colors">
                     <td className="p-4">
                       <img
-                        src={borrow.bookImage || 'https://i.ibb.co/2kR5zq0/User-avatar-svg.png'}
+                        src={borrow.bookImage || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800'}
                         alt={borrow.bookTitle}
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800';
+                        }}
                         className="w-12 h-16 object-cover rounded-lg"
                       />
                     </td>
@@ -124,8 +127,11 @@ function MyBorrowsContent() {
               >
                 <div className="flex gap-4">
                   <img
-                    src={borrow.bookImage || 'https://i.ibb.co/2kR5zq0/User-avatar-svg.png'}
+                    src={borrow.bookImage || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800'}
                     alt={borrow.bookTitle}
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800';
+                    }}
                     className="w-16 h-20 object-cover rounded-lg flex-shrink-0"
                   />
                   <div className="flex-1">
