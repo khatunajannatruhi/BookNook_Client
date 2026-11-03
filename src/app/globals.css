@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --foreground: #1a1a1a;
@@ -13,6 +15,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
+  min-height: 100vh;
 }
 
 /* Swiper custom styles */
