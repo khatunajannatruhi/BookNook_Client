@@ -40,9 +40,7 @@ function LoginForm() {
 
   const handleGoogle = async () => {
     try {
-      await googleLogin();
-      toast.success('Welcome!');
-      router.push(redirect);
+      await googleLogin(redirect);
     } catch (error) {
       toast.error('Google login failed');
     }

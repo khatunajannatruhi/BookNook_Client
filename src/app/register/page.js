@@ -60,9 +60,7 @@ export default function RegisterPage() {
 
   const handleGoogle = async () => {
     try {
-      await googleLogin();
-      toast.success('Welcome!');
-      router.push('/');
+      await googleLogin('/');
     } catch {
       toast.error('Google login failed');
     }
