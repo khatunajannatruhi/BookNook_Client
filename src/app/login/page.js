@@ -14,6 +14,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/';
+  const urlError = searchParams.get('error');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +23,12 @@ function LoginForm() {
 
   useEffect(() => {
     document.title = 'BookNook | Login';
-  }, []);
+    if (urlError === 'account_not_linked') {
+      toast.error('This email is already associated with an account. Auto-linking has now been updated; please try again.', { duration: 6000 });
+    } else if (urlError) {
+      toast.error(`Sign in error: ${urlError}`, { duration: 5000 });
+    }
+  }, [urlError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
