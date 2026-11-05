@@ -6,6 +6,9 @@ import { usePathname } from 'next/navigation';
 import { FiMenu, FiX, FiSun, FiMoon, FiLogOut, FiUser } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
+const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=400';
+const FALLBACK_AVATAR_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%23d97706'><circle cx='50' cy='50' r='50'/><circle cx='50' cy='38' r='18' fill='%23ffffff'/><path d='M20 85c0-16.569 13.431-30 30-30s30 13.431 30 30' fill='%23ffffff'/></svg>";
+
 export default function Navbar() {
   const { user, logout } = useAuth();
   const pathname = usePathname();
@@ -69,6 +72,9 @@ export default function Navbar() {
   ];
 
   const isActive = (href) => pathname === href;
+  const avatarSrc = (user?.photoURL && user.photoURL.trim() && !user.photoURL.includes('i.ibb.co/2kR5zq0'))
+    ? user.photoURL
+    : DEFAULT_AVATAR;
 
   return (
     <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-amber-100 dark:border-gray-700 shadow-sm">
@@ -128,19 +134,36 @@ export default function Navbar() {
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 focus:outline-hidden"
                   >
                     <img
-                      src={user.photoURL || 'https://i.ibb.co/2kR5zq0/User-avatar-svg.png'}
-                      alt={user.name}
-                      className="w-9 h-9 rounded-full border-2 border-amber-400 object-cover"
+                      src={avatarSrc}
+                      alt={user.name || 'User profile'}
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = FALLBACK_AVATAR_SVG;
+                      }}
+                      className="w-9 h-9 rounded-full border-2 border-amber-400 object-cover shadow-xs"
                     />
                   </button>
                   {dropdownOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-2 z-50">
-                      <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
-                        <p className="font-semibold text-gray-800 dark:text-white text-sm">{user.name}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
+                        <img
+                          src={avatarSrc}
+                          alt={user.name || 'User'}
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = FALLBACK_AVATAR_SVG;
+                          }}
+                          className="w-10 h-10 rounded-full border-2 border-amber-400 object-cover shrink-0"
+                        />
+                        <div className="overflow-hidden">
+                          <p className="font-semibold text-gray-800 dark:text-white text-sm truncate">{user.name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                        </div>
                       </div>
                       <div className="px-4 py-2">
                         <p className="text-xs text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
@@ -149,7 +172,7 @@ export default function Navbar() {
                       </div>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2 transition-colors"
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2 transition-colors cursor-pointer"
                       >
                         <FiLogOut size={14} /> Logout
                       </button>
@@ -222,13 +245,18 @@ export default function Navbar() {
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-3 px-3 py-2">
                       <img
-                        src={user.photoURL || 'https://i.ibb.co/2kR5zq0/User-avatar-svg.png'}
-                        alt={user.name}
-                        className="w-8 h-8 rounded-full border-2 border-amber-400 object-cover"
+                        src={avatarSrc}
+                        alt={user.name || 'User profile'}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = FALLBACK_AVATAR_SVG;
+                        }}
+                        className="w-9 h-9 rounded-full border-2 border-amber-400 object-cover shrink-0"
                       />
-                      <div>
-                        <p className="text-sm font-semibold text-gray-800 dark:text-white">{user.name}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                      <div className="overflow-hidden">
+                        <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">{user.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                       </div>
                     </div>
                     <button

@@ -5,6 +5,8 @@ import { authClient } from '@/lib/auth-client';
 
 const AuthContext = createContext(null);
 
+export const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=400';
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,16 +17,18 @@ export function AuthProvider({ children }) {
       // 1. Check BetterAuth session
       const session = await authClient.getSession();
       if (session?.data?.user) {
+        const rawImg = session.data.user.image;
+        const validImg = rawImg && rawImg.trim() && !rawImg.includes('i.ibb.co/2kR5zq0') ? rawImg : DEFAULT_AVATAR;
         const u = {
           name: session.data.user.name,
           email: session.data.user.email,
-          photoURL: session.data.user.image || 'https://i.ibb.co/2kR5zq0/User-avatar-svg.png',
+          photoURL: validImg,
         };
         setUser(u);
         localStorage.setItem('booknook_user', JSON.stringify(u));
         try {
           const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/jwt`,
+            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/jwt`,
             { email: u.email },
             { withCredentials: true }
           );
@@ -48,7 +52,12 @@ export function AuthProvider({ children }) {
     }
     if (savedUser) {
       try {
-        setUser(JSON.parse(savedUser));
+        const parsed = JSON.parse(savedUser);
+        if (!parsed.photoURL || parsed.photoURL.includes('i.ibb.co/2kR5zq0')) {
+          parsed.photoURL = DEFAULT_AVATAR;
+          localStorage.setItem('booknook_user', JSON.stringify(parsed));
+        }
+        setUser(parsed);
       } catch {}
     }
     setLoading(false);
@@ -63,12 +72,14 @@ export function AuthProvider({ children }) {
     if (!/[A-Z]/.test(password)) throw new Error('Password must have an uppercase letter');
     if (!/[a-z]/.test(password)) throw new Error('Password must have a lowercase letter');
 
+    const finalPhotoURL = photoURL && photoURL.trim() ? photoURL.trim() : DEFAULT_AVATAR;
+
     try {
       const res = await authClient.signUp.email({
         email,
         password,
         name,
-        image: photoURL || '',
+        image: finalPhotoURL,
       });
       if (res?.error) {
         throw new Error(res.error.message || 'Registration failed');
@@ -79,7 +90,7 @@ export function AuthProvider({ children }) {
       if (existingUsers.find((u) => u.email === email)) {
         throw new Error('User already exists');
       }
-      existingUsers.push({ name, email, password, photoURL });
+      existingUsers.push({ name, email, password, photoURL: finalPhotoURL });
       localStorage.setItem('booknook_users', JSON.stringify(existingUsers));
     }
     return true;
@@ -95,16 +106,18 @@ export function AuthProvider({ children }) {
         throw new Error(res.error.message || 'Invalid email or password');
       }
       if (res?.data?.user) {
+        const rawImg = res.data.user.image;
+        const validImg = rawImg && rawImg.trim() && !rawImg.includes('i.ibb.co/2kR5zq0') ? rawImg : DEFAULT_AVATAR;
         const userData = {
           name: res.data.user.name,
           email: res.data.user.email,
-          photoURL: res.data.user.image || 'https://i.ibb.co/2kR5zq0/User-avatar-svg.png',
+          photoURL: validImg,
         };
         setUser(userData);
         localStorage.setItem('booknook_user', JSON.stringify(userData));
         try {
           const jwtRes = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/jwt`,
+            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/jwt`,
             { email: userData.email },
             { withCredentials: true }
           );
@@ -123,7 +136,7 @@ export function AuthProvider({ children }) {
 
       try {
         const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/jwt`,
+          `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/jwt`,
           { email },
           { withCredentials: true }
         );
@@ -133,7 +146,11 @@ export function AuthProvider({ children }) {
         }
       } catch {}
 
-      const userData = { name: foundUser.name, email: foundUser.email, photoURL: foundUser.photoURL };
+      const userData = {
+        name: foundUser.name,
+        email: foundUser.email,
+        photoURL: foundUser.photoURL || DEFAULT_AVATAR,
+      };
       setUser(userData);
       localStorage.setItem('booknook_user', JSON.stringify(userData));
       return userData;

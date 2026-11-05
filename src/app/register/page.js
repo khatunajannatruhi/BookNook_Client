@@ -48,7 +48,9 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      await register(name, email, password, photoURL);
+      const demoAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=400';
+      const finalPhoto = photoURL && photoURL.trim() ? photoURL.trim() : demoAvatar;
+      await register(name, email, password, finalPhoto);
       toast.success('Registration successful! Please login.');
       router.push('/login');
     } catch (error) {
@@ -113,7 +115,9 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Photo URL</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Photo URL <span className="text-xs text-gray-400 font-normal">(optional — demo avatar auto-set)</span>
+              </label>
               <div className="relative">
                 <FiImage className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <input
