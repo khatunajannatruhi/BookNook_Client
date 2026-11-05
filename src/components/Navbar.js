@@ -165,11 +165,13 @@ export default function Navbar() {
                           <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                         </div>
                       </div>
-                      <div className="px-4 py-2">
-                        <p className="text-xs text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
-                          <FiUser size={12} /> My Profile
-                        </p>
-                      </div>
+                      <Link
+                        href="/profile"
+                        onClick={() => setDropdownOpen(false)}
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-amber-50 dark:hover:bg-gray-700/50 flex items-center gap-2 transition-colors font-medium border-b border-gray-100 dark:border-gray-700"
+                      >
+                        <FiUser size={15} className="text-amber-600 dark:text-amber-400" /> My Profile
+                      </Link>
                       <button
                         onClick={handleLogout}
                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2 transition-colors cursor-pointer"
@@ -259,6 +261,13 @@ export default function Navbar() {
                         <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                       </div>
                     </div>
+                    <Link
+                      href="/profile"
+                      onClick={() => setMobileOpen(false)}
+                      className="px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-amber-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-2 font-medium"
+                    >
+                      <FiUser size={15} className="text-amber-600 dark:text-amber-400" /> My Profile
+                    </Link>
                     <button
                       onClick={handleLogout}
                       className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-left flex items-center gap-2"
