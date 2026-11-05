@@ -5,8 +5,8 @@
 ---
 
 ## 🌐 Live Website URL
-- **Client Live Site**: [https://booknook-client.vercel.app](https://booknook-client.vercel.app)
-- **Backend API**: [https://booknook-server.onrender.com](https://booknook-server.onrender.com)
+- **Client Live Site**: [https://book-nook-kohl.vercel.app](https://book-nook-kohl.vercel.app)
+- **Backend API**: [https://book-nook-server.gamma.app](https://book-nook-server.gamma.app)
 
 ---
 
@@ -53,36 +53,3 @@
 - **State Management**: React Context API (`AuthContext`)
 
 ---
-
-## 🚀 Getting Started Locally
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/khatunajannatruhi/BookNook_Client.git
-cd BookNook_Client
-```
-
-### 2. Install dependencies
-```bash
-npm install
-```
-
-### 3. Setup environment variables
-Create a `.env.local` file in the root directory:
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
-BETTER_AUTH_SECRET=booknook_better_auth_secret_key_2024
-BETTER_AUTH_URL=http://localhost:3000
-MONGODB_URI=your_mongodb_connection_string
-```
-
-### 4. Run development server
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
-
-## 📄 License
-This project is open source and available under the [MIT License](LICENSE).
