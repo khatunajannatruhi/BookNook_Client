@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import PrivateRoute from '@/components/PrivateRoute';
 import axios from 'axios';
+import { getApiUrl } from '@/lib/api';
 import Link from 'next/link';
 import { FiUser, FiMail, FiBook, FiBookmark, FiPlusCircle, FiShield, FiClock } from 'react-icons/fi';
 import { motion } from 'framer-motion';
@@ -19,7 +20,7 @@ function ProfileContent() {
     if (!user?.email) return;
 
     const fetchStats = async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       try {
         const [booksRes, borrowsRes] = await Promise.all([
           axios.get(`${apiUrl}/books?email=${encodeURIComponent(user.email)}`, { withCredentials: true }).catch(() => ({ data: [] })),
@@ -182,3 +183,4 @@ export default function ProfilePage() {
     </PrivateRoute>
   );
 }
+

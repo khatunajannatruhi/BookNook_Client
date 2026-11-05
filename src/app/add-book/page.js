@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import PrivateRoute from '@/components/PrivateRoute';
 import axios from 'axios';
+import { getApiUrl } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
@@ -37,7 +38,7 @@ function AddBookContent() {
     setLoading(true);
     try {
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/books`,
+        `${getApiUrl()}/books`,
         {
           ...formData,
           userName: user.name,

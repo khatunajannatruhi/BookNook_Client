@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
+import { getApiUrl } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 export default function BorrowModal({ book, onClose, onSuccess }) {
@@ -12,7 +13,7 @@ export default function BorrowModal({ book, onClose, onSuccess }) {
     setLoading(true);
     try {
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/borrows`,
+        `${getApiUrl()}/borrows`,
         {
           bookId: book._id,
           bookTitle: book.title,

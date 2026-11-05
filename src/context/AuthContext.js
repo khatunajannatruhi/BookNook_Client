@@ -7,6 +7,11 @@ const AuthContext = createContext(null);
 
 export const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=400';
 
+export const getApiUrl = () => {
+  const raw = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  return raw.replace(/\/api\/?$/, '');
+};
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +33,7 @@ export function AuthProvider({ children }) {
         localStorage.setItem('booknook_user', JSON.stringify(u));
         try {
           const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/jwt`,
+            `${getApiUrl()}/jwt`,
             { email: u.email },
             { withCredentials: true }
           );
@@ -97,64 +102,51 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (email, password) => {
+    let res = null;
+    let authError = null;
+
     try {
-      const res = await authClient.signIn.email({
+      res = await authClient.signIn.email({
         email,
         password,
       });
-      if (res?.error) {
-        throw new Error(res.error.message || 'Invalid email or password');
-      }
-      if (res?.data?.user) {
-        const rawImg = res.data.user.image;
-        const validImg = rawImg && rawImg.trim() && !rawImg.includes('i.ibb.co/2kR5zq0') ? rawImg : DEFAULT_AVATAR;
-        const userData = {
-          name: res.data.user.name,
-          email: res.data.user.email,
-          photoURL: validImg,
-        };
-        setUser(userData);
-        localStorage.setItem('booknook_user', JSON.stringify(userData));
-        try {
-          const jwtRes = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/jwt`,
-            { email: userData.email },
-            { withCredentials: true }
-          );
-          if (jwtRes.data?.token) {
-            localStorage.setItem('booknook_token', jwtRes.data.token);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${jwtRes.data.token}`;
-          }
-        } catch {}
-        return userData;
-      }
-    } catch (err) {
-      // Fallback if BetterAuth server route had an error
-      const existingUsers = JSON.parse(localStorage.getItem('booknook_users') || '[]');
-      const foundUser = existingUsers.find((u) => u.email === email && u.password === password);
-      if (!foundUser) throw new Error(err.message || 'Invalid email or password');
+    } catch (e) {
+      authError = e;
+    }
 
-      try {
-        const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/jwt`,
-          { email },
-          { withCredentials: true }
-        );
-        if (res.data?.token) {
-          localStorage.setItem('booknook_token', res.data.token);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
-        }
-      } catch {}
+    if (res?.error) {
+      throw new Error(res.error.message || 'Invalid email or password');
+    }
 
+    if (res?.data?.user) {
+      const rawImg = res.data.user.image;
+      const validImg = rawImg && rawImg.trim() && !rawImg.includes('i.ibb.co/2kR5zq0') ? rawImg : DEFAULT_AVATAR;
       const userData = {
-        name: foundUser.name,
-        email: foundUser.email,
-        photoURL: foundUser.photoURL || DEFAULT_AVATAR,
+        name: res.data.user.name,
+        email: res.data.user.email,
+        photoURL: validImg,
       };
       setUser(userData);
       localStorage.setItem('booknook_user', JSON.stringify(userData));
+      try {
+        const jwtRes = await axios.post(
+          `${getApiUrl()}/jwt`,
+          { email: userData.email },
+          { withCredentials: true }
+        );
+        if (jwtRes.data?.token) {
+          localStorage.setItem('booknook_token', jwtRes.data.token);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${jwtRes.data.token}`;
+        }
+      } catch {}
       return userData;
     }
+
+    if (authError) {
+      throw new Error(authError.message || 'Login failed. Please check your credentials.');
+    }
+
+    throw new Error('Invalid email or password');
   };
 
   const logout = async () => {
@@ -162,7 +154,7 @@ export function AuthProvider({ children }) {
       await authClient.signOut();
     } catch {}
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/jwt/logout`, {}, { withCredentials: true });
+      await axios.post(`${getApiUrl()}/jwt/logout`, {}, { withCredentials: true });
     } catch {}
     delete axios.defaults.headers.common['Authorization'];
     localStorage.removeItem('booknook_token');

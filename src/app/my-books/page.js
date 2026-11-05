@@ -5,6 +5,7 @@ import PrivateRoute from '@/components/PrivateRoute';
 import EditBookModal from '@/components/EditBookModal';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import axios from 'axios';
+import { getApiUrl } from '@/lib/api';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import { motion } from 'framer-motion';
@@ -19,7 +20,7 @@ function MyBooksContent() {
   const fetchBooks = async () => {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/books?email=${user.email}`,
+        `${getApiUrl()}/books?email=${user.email}`,
         { withCredentials: true }
       );
       setBooks(res.data);
@@ -48,7 +49,7 @@ function MyBooksContent() {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/books/${id}`, {
+        await axios.delete(`${getApiUrl()}/books/${id}`, {
           withCredentials: true,
         });
         toast.success('Book deleted successfully');

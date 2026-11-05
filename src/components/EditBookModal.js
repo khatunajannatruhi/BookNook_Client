@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 export default function EditBookModal({ book, onClose, onSuccess }) {
@@ -26,7 +27,7 @@ export default function EditBookModal({ book, onClose, onSuccess }) {
     setLoading(true);
     try {
       await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_URL}/books/${book._id}`,
+        `${getApiUrl()}/books/${book._id}`,
         formData,
         { withCredentials: true }
       );

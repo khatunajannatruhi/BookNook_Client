@@ -2,6 +2,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
+import { getApiUrl } from '@/lib/api';
 import PrivateRoute from '@/components/PrivateRoute';
 import BorrowModal from '@/components/BorrowModal';
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -15,7 +16,7 @@ function BookDetailsContent() {
 
   const fetchBook = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/books/${id}`, {
+      const res = await axios.get(`${getApiUrl()}/books/${id}`, {
         withCredentials: true,
       });
       setBook(res.data);

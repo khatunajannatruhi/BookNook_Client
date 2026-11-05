@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '@/lib/api';
 import BookCard from '@/components/BookCard';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { motion } from 'framer-motion';
@@ -13,7 +14,7 @@ export default function AllBooksPage() {
     document.title = 'BookNook | All Books';
     const fetchBooks = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/books`);
+        const res = await axios.get(`${getApiUrl()}/books`);
         setBooks(res.data);
       } catch {
         setBooks([]);

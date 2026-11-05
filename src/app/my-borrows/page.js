@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import PrivateRoute from '@/components/PrivateRoute';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import axios from 'axios';
+import { getApiUrl } from '@/lib/api';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import { motion } from 'framer-motion';
@@ -17,7 +18,7 @@ function MyBorrowsContent() {
   const fetchBorrows = async () => {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/borrows?email=${user.email}`,
+        `${getApiUrl()}/borrows?email=${user.email}`,
         { withCredentials: true }
       );
       setBorrows(res.data);
@@ -46,7 +47,7 @@ function MyBorrowsContent() {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/borrows/${id}`, {
+        await axios.delete(`${getApiUrl()}/borrows/${id}`, {
           withCredentials: true,
         });
         toast.success('Book returned successfully');

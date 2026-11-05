@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '@/lib/api';
 import Link from 'next/link';
 import BookCard from '@/components/BookCard';
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -26,7 +27,7 @@ export default function HomePage() {
     const fetchBooks = async () => {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/books?sort=createdAt&order=desc&limit=6`
+          `${getApiUrl()}/books?sort=createdAt&order=desc&limit=6`
         );
         setBooks(res.data);
       } catch {
